@@ -386,6 +386,16 @@ class Attention(nn.Module):
             k: w for k, w in cross_attention_kwargs.items() if k in attn_parameters
         }
 
+        from diffusers.models.attention_processor import (
+            AttnProcessor as DiffusersAttnProcessor,
+            AttnProcessor2_0 as DiffusersAttnProcessor2_0,
+        )
+
+        if isinstance(self.processor, DiffusersAttnProcessor) or isinstance(
+            self.processor, DiffusersAttnProcessor2_0
+        ):
+            self.set_processor(AttnProcessor())
+
         return self.processor(
             self,
             hidden_states,
